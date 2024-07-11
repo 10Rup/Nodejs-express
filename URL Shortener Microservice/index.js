@@ -1,53 +1,94 @@
 let express = require('express')
-// const { Timestamp } = require('mongodb')
+const mongoose = require('mongoose')
 let app = express()
 let env = require('dotenv').config()
 let dns = require('dns')
 let bodyparser = require('body-parser')
 const  shortid = require("shortid")
-
-
+const { MongoClient } = require('mongodb');
 app.use('/public', express.static(__dirname+"/public"))
 app.use(bodyparser.urlencoded({extended:false}))
 
-app.get('/', (req, res)=>{
-    res.sendFile(__dirname+"/views/index.html")
+const personSchema = new mongoose.Schema({
+    name: {
+        type: String,
+    },
+    age: Number,
+    favoriteFoods: [String]
 })
+const Person = mongoose.model("Person", personSchema)
 
-app.use('/api/shorturl', (req, res, next)=>{
-    let url =req.body.myurl.replace("https://","")
-
-    const options ={
-        all: true
+const createAndSavePerson =async ()=>{
+    newRecord =await new Person({name: "Rup", age: 22, favoriteFoods:['a','b','c']})
+    newRecord.save()
     }
-    let base ='http://localhost:3000'
-    let urlId = shortid.generate()
 
-    dns.lookup(url, options, (err, addressess)=>{
-        if(err){
-            console.log(`error - ${url}`)
-        }
-        else{
-           console.log(`${base}/${urlId}`)
-        }
+
+createAndSavePerson()
+Person.find()
+// const shortUrlSchema = new mongoose.Schema({
+//     long_Url:{
+//         type:String,
         
-    })
-    next();
-})
+//     },
+//     short_Url:{
+//         type:String,
+//     }
+// })
+
+
+// const urlShortener = mongoose.model("urlShortener", shortUrlSchema)
+// data ={long_Url:"https://accounts.google.com", short_Url:'hdfcs'}
+// const add_url = (urls,done)=>{
+//     // newrecord = new urlShortener({long_Url:"https://accounts.google.com", short_Url:'hdfcs'})
+//     newrecord = urlShortener.create(urls,(err,record)=>{
+//             if(err){
+//                 return console.log(err)
+//             }
+//             done(null, record)
+//         })
+    
+    
+    // newrecord.save((err,record)=>{
+    //     if(err){
+    //         return console.log(err)
+    //     }
+    //     done(null, record)
+    // })
+// }
+// add_url(data)
+// urlShortener.find()
+// app.get('/', (req, res)=>{
+//     res.sendFile(__dirname+"/views/index.html")
+// })
+
+// app.use('/api/shorturl', (req, res, next)=>{
+//     let url =req.body.myurl.replace("https://","")
+
+//     const options ={
+//         all: true
+//     }
+//     let base ='http://localhost:3000'
+//     let urlId = shortid.generate()
+
+//     dns.lookup(url, options, (err, addressess)=>{
+//         if(err){
+//             console.log(`error - ${url}`)
+//         }
+//         else{
+//            console.log(`${base}/${urlId}`)
+//         }
+        
+//     })
+//     next();
+// })
 
 app.post('/api/shorturl', (req, res)=>{
-    // console.log(req.body.myurl)
+
     const url = req.body.myurl
-    // dns.lookup(url, (err, address)=>{
-    //     console.log(`${address}`)
-    // })
-    // const options ={
-    //     all: true
-    // }
-    // dns.lookup(url,options, (err, address, family) => 
-    //     console.log('address: %j family: IPv%s', address, family));
-    // dns.lookup('www.google.com',options, (err, address, family) => 
-    //     console.log('address: %j family: IPv%s', address, family));
+    console.log(new URL(url).hostname)
+    // urlShortener.find()
+    add_url(url,url)
     res.json({
         "original_url": url,
         "short_url": url
