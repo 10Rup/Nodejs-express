@@ -2,7 +2,10 @@ const Task = require('../model/Task')
 
 
 const getAllTasks = (req, res)=>{
-    res.send("All Data")
+    const tasks = {tasks:"All Data"}
+    res.json(tasks)
+    // console.log(tasks)
+
 }
 
 const getTask = (req, res)=>{
