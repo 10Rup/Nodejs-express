@@ -1,5 +1,6 @@
 const express = require('express')
 const tasks = require('./routes/tasks.js')
+const notFound =  require('./middelware/not-found.js')
 // const bodyparser = require('body-parser')
 const {connectDb} = require('./db/connect.js')
 require('dotenv').config()
@@ -7,6 +8,9 @@ require('dotenv').config()
 const port = 3000
 app = express()
 
+// static files
+app.use(express.static('./public'))
+app.use(notFound)
 // app.use(bodyparser.urlencoded({extended:false}))
 app.use(express.json())
 
